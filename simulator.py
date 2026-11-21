@@ -43,6 +43,7 @@ class State:
             else:
                 self.interest = base
             self.balance *= 1 + self.interest
+            self.balance = int(self.balance)
         if self.tick % 100 == 0:
             self.balance += self.territory
         self.tick += 1
