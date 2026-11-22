@@ -20,6 +20,7 @@ class State:
     def ticks(self, attack = -1):
         if attack != -1:
             self.dispatched = self.balance * attack / 100
+
             self.attack_wait = 0
         if self.dispatched < 0:
             self.dispatched = 0
