@@ -19,12 +19,8 @@ class State:
 
     def ticks(self, attack = -1):
         if attack != -1:
-            self.dispatched = self.balance * attack / 100
-
+            self.dispatched = self.balance * attack // 100
             self.attack_wait = 0
-        if self.dispatched < 0:
-            self.dispatched = 0
-            self.attack_wait = -1
         if self.attack_wait != -1:
             if self.attack_wait == 0:
                 self.dispatched -= 2 * self.perimeter
@@ -35,16 +31,19 @@ class State:
                 self.attack_wait = 4 if self.territory < 1000 else 3
             else:
                 self.attack_wait -= 1
+        if self.dispatched < 0:
+            self.dispatched = 0
+            self.attack_wait = -1
         if self.tick % 10 == 0:
+            available = self.balance - self.dispatched
             base = 0.07 - self.tick * 0.00003125
-            if self.balance > self.territory * 150:
+            if available > self.territory * 150:
                 self.interest = 0
-            elif self.balance > self.territory * 100:
-                self.interest = base * (1.5 - 0.05 * self.balance / self.territory)
+            elif available > self.territory * 100:
+                self.interest = base * (1.5 - 0.05 * available / self.territory)
             else:
                 self.interest = base
-            self.balance *= 1 + self.interest
-            self.balance = int(self.balance)
+            self.balance += int(self.interest * available)
         if self.tick % 100 == 0:
             self.balance += self.territory
         self.tick += 1
